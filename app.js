@@ -6,7 +6,7 @@ const mysql = require('mysql')
 const md5 = require('md5')
 const moment = require('moment')
 const Cryptr = require("cryptr")
-const crypt = new Cryptr("12345") //Secret key
+const crypt = new Cryptr("123456789") //Secret key
 const multer = require('multer') //to Upload File
 const path = require('path') // to call path directory
 const fs = require('fs') // to manage file
@@ -127,7 +127,7 @@ let upload = multer({storage: storage})
 // Mobil =========================================================================
 
 // end-point akses data mobil => GET 
-app.get("/mobil", Token(), (req,res) => {
+app.get("/mobil", (req,res) => {
     //create sql
     let sql = "SELECT * FROM mobil"
 
@@ -306,7 +306,7 @@ app.delete("/mobil/:id", (req,res) => {
 // Pelanggan =========================================================================
 
 //endpoint akses pelanggan => GET
-app.get("/pelanggan", (req,res) => {
+app.get("/pelanggan", Token(), (req,res) => {
     let sql = "SELECT * FROM pelanggan" //query
 
     db.query(sql, (error, result) => {
@@ -429,7 +429,7 @@ app.delete("/pelanggan/:id", (req,res) => {
 // Karyawan =========================================================================
 
 //endpoint akses karyawan => GET
-app.get("/karyawan", (req,res) => {
+app.get("/karyawan", Token(), (req,res) => {
     let sql = "SELECT * FROM karyawan" //query
 
     db.query(sql, (error, result) => {
@@ -479,7 +479,7 @@ app.post("/karyawan", (req,res) => {
         alamat_karyawan: req.body.alamat_karyawan,
         kontak: req.body.kontak,
         username: req.body.username,
-        password: req.body.password
+        password: md5(req.body.password)
     }
 
     let sql = "INSERT INTO karyawan SET ?"
@@ -600,7 +600,7 @@ app.get("/sewa/:id", (req,res) => {
 })
 
 // end-point menyimpan data sewa => POST
-app.post("/sewa", (req,res) => {
+app.post("/sewa", Token(), (req,res) => {
     let data = {
         id_mobil: req.body.id_mobil,
         id_karyawan: req.body.id_karyawan,
